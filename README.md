@@ -1,4 +1,4 @@
-# `laa` Manual
+# `laa`
 
 ```bash
     usage:
