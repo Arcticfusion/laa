@@ -1,0 +1,29 @@
+NAME
+    laa - list all hidden files in a directory
+
+SYNOPSIS
+    laa [DIRECTORY...]
+
+DESCRIPTION
+    The laa function is a shell function that lists all of the hidden files in a specified directory or directories. Hidden files are files that have names that start with a period (`.`). This function uses the ls command with the -d and -a options to show hidden files in a directory.
+
+OPTIONS
+    DIRECTORY
+        This is the path to the directory or directories that you want to list the hidden files in. You can specify multiple directories by separating them with spaces. If no directory is specified, the function will list the hidden files in the current directory.
+
+EXAMPLES
+    To list the hidden files in the current directory, use the following command:
+        laa
+
+    To list the hidden files in the /home/user/documents directory, use the following command:
+        laa /home/user/documents
+
+    To list the hidden files in the /home/user/documents and /home/user/photos directories, use the following command:
+        laa /home/user/documents /home/user/photos
+
+AUTHOR
+
+    This manual was initially generated using ChatGPT, a large language model trained by OpenAI. It was finalised by Arcticfusion <github.com/Arcticfusion>
+
+SOURCES
+    Assistant (2022). "laa function manual." Retrieved from https://assistant.openai.com/
