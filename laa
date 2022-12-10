@@ -1,21 +1,67 @@
 #!/bin/bash
 
+# Recommended `ls` alias
+# `alias ls='ls -hF --color=auto'`
+# -h automatically uses human readable numbers when -l or -s
+# is used as an option later
+# -F adds a classifying indicator to each entry
+# --color=auto uses classifying colors for each entry
+
+# Configure glob to use extended syntax
+# This allows for conditional SHELL patterns
 shopt -s extglob
+
+# Lists the hidden contents in a directory or directories
 laa() {
+    # If there is only one argument, list the contents in that directory
     if [[ $# -eq 1 ]]; then
-        exec 3>&1   # This creates another writing file descriptor that points to STDOUT in this shell
-        _items=$(cd ${1}; ls -d .!(|.)?* 1>&3)  # This requires extended glob
-                                                # `shopt -s extglob` to enable
-        unset _items
-        exec 3>&- # Closes the writing file descriptor
-    elif [[ $# -gt 1 ]]; then
+
+        # Open a file descriptor for writing that points to this shell's STDOUT
         exec 3>&1
-        for i in $@; do
-            _items=$(cd $i; echo "$i:" 1>&3; ls -d .!(|.)* 1>&3)
-        done
-        unset _items i
+
+        # Move to the requested directory in a subshell
+        # then list all the items in the directory that
+        # match the regex pattern `^.([^.]|..+)$`
+        # Redirect the output to this shell's STDOUT
+        _laa=$(cd ${1}; ls -d .!(|.)?* 1>&3)  # Note: This glob notation
+                                              # requires extended glob,
+                                              # enabled with `shopt -s extglob`
+
+        # Uninitialise variable
+        unset _laa
+
+        # Close the file descriptor so it cannot write anymore
         exec 3>&-
+
+    # If there is more than one argument, name each directory
+    # followed by its contents
+    elif [[ $# -gt 1 ]]; then
+
+        # Open a file descriptor for writing that points to this shell's STDOUT
+        exec 3>&1
+
+        # Loop over each argument, moving to the directory, then
+        # in a subshell, name the directory and
+        # list all the items in the directory that
+        # match the regex pattern `^.([^.]|..+)$`
+        # Redirect both outputs to this shell's STDOUT
+        for i in $@; do
+            _laa=$(cd $i; echo "$i:" 1>&3; ls -d .!(|.)* 1>&3)
+        done
+
+        # Uninitialise variables
+        unset _laa i
+
+        # Close the file descriptor so it cannot write anymore
+        exec 3>&-
+
+    # If there are no arguments, list the contents of the current directory
     else
+        # List the items in the current directory that match
+        # the regex expression `^.([^.]|..+)$`
+        # This implementation requires the use of extended glob,
+        # which can be configured by running
+        # `shopt -s extglob`
         ls -d .!(|.)*
     fi
 
